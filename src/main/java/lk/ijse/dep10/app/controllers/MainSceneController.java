@@ -50,7 +50,10 @@ public class MainSceneController {
     private WritableImage snapshot;
     @FXML
     private void initialize(){
-
+        cnvMain.widthProperty().bind(root.widthProperty());
+        cnvMain.heightProperty().bind(root.heightProperty());
+        cnvMain.getGraphicsContext2D().setStroke(clrStroke.getValue());
+        cnvMain.getGraphicsContext2D().setFill(clrFill.getValue());
     }
 
     public void cnvMainOnMouseClicked(MouseEvent mouseEvent) {
@@ -59,6 +62,9 @@ public class MainSceneController {
         if (istxtLabelClicked) {
             lblText.setLayoutX(mouseEvent.getSceneX());
             lblText.setLayoutY(mouseEvent.getSceneY());
+        }
+        if (isPencilClicked){
+            cnvMain.getGraphicsContext2D().beginPath();
         }
     }
     public void cnvMainOnMouseDragged(MouseEvent mouseEvent) {
@@ -69,26 +75,30 @@ public class MainSceneController {
 
         GraphicsContext gc = cnvMain.getGraphicsContext2D();  //
         if (isRectCorneredClicked) {
+            gc.clearRect(0 , 0, cnvMain.getWidth(), cnvMain.getHeight());
             gc.drawImage(snapshot, 0,0);
-
             gc.strokeRect(width < 0 ? x2 : x1, height < 0 ? y2 : y1, Math.abs(width), Math.abs(height));
             gc.fillRect(width < 0 ? x2 : x1, height < 0 ? y2 : y1, Math.abs(width), Math.abs(height));
         }
         if (isRectRoundedClicked) {
             gc.clearRect(0, 0, cnvMain.getWidth(), cnvMain.getHeight());
+            gc.drawImage(snapshot, 0,0);
             gc.strokeRoundRect(width < 0 ? x2 : x1, height < 0 ? y2 : y1, Math.abs(width), Math.abs(height), 10, 10);
             gc.fillRoundRect(width < 0 ? x2 : x1, height < 0 ? y2 : y1, Math.abs(width), Math.abs(height), 10, 10);
         }
         if (isOvalClicked) {
 
             gc.clearRect(0, 0,cnvMain.getWidth(), cnvMain.getHeight());
+            gc.drawImage(snapshot, 0,0);
             gc.strokeOval(x1, y1, Math.abs(width), Math.abs(height));
             gc.fillOval(x1, y1, Math.abs(width), Math.abs(height));
         }
         if (isPencilClicked) {
-            gc.strokeLine(x1,y1,x2,y2);
-            x1=x2;
-            y1=y2;
+            gc.lineTo(x2,y2);
+            gc.stroke();
+//            gc.strokeLine(x1,y1,x2,y2);
+//            x1=x2;
+//            y1=y2;
         }
         if (isErasorClicked) {
             gc.clearRect(x2, y2, 10, 10);
